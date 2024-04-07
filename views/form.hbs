@@ -1,0 +1,46 @@
+<div
+  class="search-form"
+  style="margin-top: 20px; padding: 20px; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"
+>
+  <h2
+    style="font-family: 'Roboto', sans-serif; margin-bottom: 20px; text-align: center;"
+  >Enter Details for Restaurant Information Retrieval</h2>
+  <form action="/api/restrauntForm" method="POST">
+    <div class="form-group">
+      <label for="page" style="font-family: 'Roboto', sans-serif;">Page:</label>
+      <input
+        type="text"
+        id="page"
+        name="page"
+        required
+        style="font-family: 'Roboto', sans-serif; width: 80%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"
+      />
+    </div>
+    <div class="form-group">
+      <label for="perPage" style="font-family: 'Roboto', sans-serif;">Per Page:</label>
+      <input
+        type="text"
+        id="perPage"
+        name="perPage"
+        required
+        style="font-family: 'Roboto', sans-serif; width: 80%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"
+      />
+    </div>
+    <div class="form-group">
+      <label for="borough" style="font-family: 'Roboto', sans-serif;">Borough
+        (Optional):</label>
+      <input
+        type="text"
+        id="borough"
+        name="borough"
+        style="font-family: 'Roboto', sans-serif; width: 80%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"
+      />
+    </div>
+    <button
+      type="submit"
+      style="background-color: #333; color: #fff; cursor: pointer; padding: 10px; border: none; border-radius: 5px; width: 80%; transition: background-color 0.3s ease-out; font-family: 'Roboto', sans-serif;"
+    >
+      Submit
+    </button>
+  </form>
+</div>

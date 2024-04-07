@@ -1,3 +1,4 @@
+// load mongoose since we need it to define a model
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -21,4 +22,4 @@ const restaurantSchema = new Schema({
   restaurant_id: String,
 });
 
-module.exports = mongoose.model("restaurants", restaurantSchema);
+module.exports = mongoose.model("restaurant", restaurantSchema);

@@ -1,13 +1,11 @@
+// database.js
+const url = process.env.DB_CONNECTION_STRING;
 const mongoose = require("mongoose");
 const Restaurant = require("../models/restaurants");
 
 const initialize = async () => {
   try {
-    const url = process.env.DB_CONNECTION_STRING;
-    await mongoose.connect(url, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(url);
     console.log("Connected to MongoDB");
   } catch (error) {
     console.error("Error connecting to MongoDB:", error.message);
@@ -32,11 +30,12 @@ const getAllRestaurants = async (page, perPage, borough) => {
     const restro = await Restaurant.find(optionalBorough)
       .sort({ restaurant_id: 1 })
       .skip((page - 1) * perPage)
-      .limit(perPage);
+      .limit(perPage)
+      .lean();
     return restro;
   } catch (error) {
     console.error(
-      "Error getting restaurant information based on these parameters:",
+      "Error getting restaurant information based on these paramenetrs. Please see: ",
       error.message
     );
     throw error;
@@ -49,7 +48,7 @@ const getRestaurantById = async (Id) => {
     return restro;
   } catch (error) {
     console.error(
-      "Error getting restaurant information based on this Id:",
+      "Error getting restaurant information based on this Id. Please see: ",
       error.message
     );
     throw error;
@@ -61,17 +60,19 @@ const updateRestaurantById = async (Id, data) => {
     const restro = await Restaurant.findByIdAndUpdate(Id, data, { new: true });
     return restro;
   } catch (error) {
-    console.error("Error updating the restaurant information:", error.message);
+    console.error("Error updating the restaurant information: ", error.message);
     throw error;
   }
 };
 
 const deleteRestaurantById = async (Id) => {
   try {
-    const restroDeleted = await Restaurant.findOneAndDelete({ _id: Id });
+    const restroDeleted = await Restaurant.findOneAndDelete({
+      _id: Id,
+    });
     return restroDeleted;
   } catch (error) {
-    console.error("Error deleting the restaurant information:", error.message);
+    console.error("Error deleting the restaurant information: ", error.message);
     throw error;
   }
 };

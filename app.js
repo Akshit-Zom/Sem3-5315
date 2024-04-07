@@ -1,69 +1,87 @@
+// Import required modules
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const appConfig = require("./package.json");
+const exphbs = require("express-handlebars");
+const bodyParser = require("body-parser");
+const { body, param, query, validationResult } = require("express-validator");
+const path = require("path");
 
+// Initialize Express app
 const app = express();
+const port = process.env.PORT || 8000;
+
+// Connect to MongoDB database
 const database = require("./config/database");
-const bodyParser = require("body-parser"); // pull information from HTML POST (express4)
-
-const port = process.env.PORT || 3000;
-app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
-app.use(bodyParser.json()); // parse application/json
-app.use(bodyParser.json({ type: "application/vnd.api+json" })); // parse application/vnd.api+json as json
-const { param, query, validationResult } = require("express-validator"); //express-validator for checking input params in query for getting all restaurant details based on page, perPage and borough(optional)
-// const Restaurant = require("./models/restaurants");
-
 database
   .initialize()
   .then(() => {
-    // Route to add a new restaurant
-    app.post("/api/restaurants", async (req, res) => {
-      try {
-        const restaurant = await database.addNewRestaurant(req.body);
-        res
-          .status(201)
-          .json({ message: "Restaurant added successfully!", restaurant });
-      } catch (error) {
-        console.error("Error adding new restaurant:", error.message);
-        res.status(500).send("Internal Server Error");
-      }
+    console.log("Connected to MongoDB.");
+
+    // Set up view engine
+    app.engine(".hbs", exphbs({ extname: ".hbs" }));
+    app.set("view engine", ".hbs");
+
+    // Middleware for parsing incoming requests
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.static(path.join(__dirname, "public")));
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.use(bodyParser.json({ type: "application/vnd.api+json" }));
+
+    // Route to render form for user to enter page, perPage, and borough
+    app.get("/api/restrauntForm", (req, res) => {
+      res.render("form.hbs");
     });
 
-    //get all restaurant data from db based on page, perPage and borough(optional)
-    app.get(
-      "/api/restaurants",
+    // Route to handle form submission
+    app.post(
+      "/api/restrauntForm",
       [
-        query("page").isNumeric().toInt(),
-        query("perPage").isNumeric().toInt(),
-        query("borough").optional().isString(),
+        body("page").isNumeric().withMessage("Page must be a number"),
+        body("perPage").isNumeric().withMessage("PerPage must be a number"),
+        body("borough")
+          .optional()
+          .isString()
+          .withMessage("Borough must be a string"),
       ],
       async (req, res) => {
-        const errorInput = validationResult(req);
-        if (!errorInput.isEmpty()) {
-          console.error("User input error. Please check the input provided.");
-          return res.status(400).json({
-            errors:
-              "User input error. Please check the input provided." +
-              errorInput.array(),
+        // Validation
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(400).render("error", {
+            message: "Validation error",
+            errors: errors.array(),
           });
         }
-        // using function in database.js to get all employees in the database based on these params
         try {
-          const { page, perPage, borough } = req.query;
+          // Get input parameters
+          const { page, perPage, borough } = req.body;
+          // Retrieve data from database based on input parameters
           const restro = await database.getAllRestaurants(
             page,
             perPage,
             borough
           );
-          console.log("Restaurant data retrieved.");
-          res.status(200).json({
-            message: "Successfully retrieved data from database.",
-            data: restro,
+          // Handle empty result
+          if (restro.length === 0) {
+            return res.status(404).render("error", {
+              message: "No restaurants found for the specified borough",
+            });
+          }
+          // Render restaurant display page with retrieved data
+          res.status(200).render("output", {
+            page,
+            perPage,
+            borough,
+            restaurants: restro,
           });
         } catch (reason) {
           console.error("Error getting all restaurants:", reason.message);
-          res.status(500).json(reason);
+          res.status(500).render("error", {
+            message: "Database error",
+            reason: reason.message,
+          });
         }
       }
     );
@@ -173,10 +191,10 @@ database
     });
 
     app.listen(port, () => {
-      console.log(`${appConfig.name} listening on port: ${port}`);
+      console.log(`Server running on port: ${port}`);
     });
   })
   .catch((error) => {
     console.error("Error initializing app:", error.message);
-    process.exit(1); // Exit the process if initialization fails
+    process.exit(1);
   });

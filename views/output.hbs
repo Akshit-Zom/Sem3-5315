@@ -1,0 +1,58 @@
+<div class="restaurant-list" style="margin-top: 20px;">
+  <h2
+    style="font-family: 'Roboto', sans-serif; margin-bottom: 20px; text-align: center;"
+  >Restaurant Results</h2>
+  <table style="width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th
+          style="border: 1px solid #ccc; padding: 10px; background-color: #f2f2f2; font-family: 'Roboto', sans-serif;"
+        >Name</th>
+        <th
+          style="border: 1px solid #ccc; padding: 10px; background-color: #f2f2f2; font-family: 'Roboto', sans-serif;"
+        >Restaurant ID</th>
+        <th
+          style="border: 1px solid #ccc; padding: 10px; background-color: #f2f2f2; font-family: 'Roboto', sans-serif;"
+        >Cuisine</th>
+        <th
+          style="border: 1px solid #ccc; padding: 10px; background-color: #f2f2f2; font-family: 'Roboto', sans-serif;"
+        >Address</th>
+        <th
+          style="border: 1px solid #ccc; padding: 10px; background-color: #f2f2f2; font-family: 'Roboto', sans-serif;"
+        >Grades</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each restaurants}}
+        <tr>
+          <td
+            style="border: 1px solid #ccc; padding: 10px; font-family: 'Roboto', sans-serif;"
+          >{{this.name}}</td>
+          <td
+            style="border: 1px solid #ccc; padding: 10px; font-family: 'Roboto', sans-serif;"
+          >{{this.restaurant_id}}</td>
+          <td
+            style="border: 1px solid #ccc; padding: 10px; font-family: 'Roboto', sans-serif;"
+          >{{this.cuisine}}</td>
+          <td
+            style="border: 1px solid #ccc; padding: 10px; font-family: 'Roboto', sans-serif;"
+          >{{this.address.building}}
+            {{this.address.street}},
+            {{this.address.zipcode}}</td>
+          <td
+            style="border: 1px solid #ccc; padding: 10px; font-family: 'Roboto', sans-serif;"
+          >
+            <ul style="margin: 0; padding-left: 20px;">
+              {{#each this.grades}}
+                <li style="font-family: 'Roboto', sans-serif;">Date:
+                  {{date}}, Grade:
+                  {{grade}}, Score:
+                  {{score}}</li>
+              {{/each}}
+            </ul>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
