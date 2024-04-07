@@ -1,0 +1,9 @@
+<form id="restaurantForm" action="/api/restaurants" method="post">
+  <label for="page">Page:</label>
+  <input type="number" id="page" name="page" min="1" required />
+  <label for="perPage">Per Page:</label>
+  <input type="number" id="perPage" name="perPage" min="1" required />
+  <label for="borough">Borough:</label>
+  <input type="text" id="borough" name="borough" required />
+  <button type="submit">Search</button>
+</form>
