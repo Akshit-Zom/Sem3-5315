@@ -2,10 +2,6 @@
   <head>
     <title>{{title}}</title>
     <link
-      rel="stylesheet"
-      href="/Web Programming and framewrok 1/5315-project/styles/style.css"
-    />
-    <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
     />
@@ -16,6 +12,21 @@
     >
       <h1>Restaurant Information Retrieval</h1>
     </header>
+    <nav>
+      <br />
+      <h2 style="text-align: left;">Menu Options:</h2>
+      <ul>
+        {{#if user}}
+          <li>Welcome, {{user.username}}</li>
+          <li><a href="/api/restrauntForm">Get Restaurant Details</a></li>
+          <li><a href="/logout">Log out</a></li>
+        {{else}}
+          <li><a href="/login">Log in</a></li>
+          <li><a href="/signup" class="btn">Sign up</a></li>
+        {{/if}}
+      </ul>
+    </nav>
+
     <div
       class="content"
       style="padding: 20px; text-align: center; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"
